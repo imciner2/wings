@@ -610,7 +610,7 @@ edit_dialog(Name, Assign, St=#st{mat=Mtab0}, Mat0) ->
     Shine0 = prop_get(shininess, OpenGL0),
     {Emiss0,_} = ask_prop_get(emission, OpenGL0),
     Preview = fun(GLCanvas, Fields) ->
-		      mat_preview(GLCanvas,Fields,prop_get(maps,Mat0))
+                      mat_preview(GLCanvas,Fields,prop_get(maps,Mat0))
 	      end,
     Refresh = fun(_Key, _Value, Fields) ->
 		      GLCanvas = wings_dialog:get_widget(preview, Fields),
@@ -737,7 +737,7 @@ mat_preview(Canvas, Common, Maps) ->
     glu:quadricDrawStyle(Obj, ?GLU_FILL),
     glu:quadricNormals(Obj, ?GLU_SMOOTH),
     %% UseNormalMap = apply_normal_map(get_normal_map(Maps)), No bi-tangent..
-    RS1 = case apply_texture(prop_get(diffuse, Maps, false), RS0) of
+    RS1 = case apply_texture(prop_get(diffuse, Maps, none), RS0) of
               true -> glu:quadricTexture(Obj, ?GLU_TRUE), RS0;
               false -> RS0
           end,
