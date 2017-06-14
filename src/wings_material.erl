@@ -489,6 +489,7 @@ apply_texture(none, Shader) ->
     no_texture(Shader);
 apply_texture(TxId, Shader) ->
     shader_texture(diffuse, true, Shader),
+    io:format("Tx ~p ~p~n",[TxId, Shader]),
     gl:bindTexture(?GL_TEXTURE_2D, TxId),
     true.
 
@@ -721,23 +722,25 @@ mat_preview(Canvas, Common, Maps) ->
     Diff  = preview_mat(diffuse, Common, Alpha),
     Spec  = preview_mat(specular, Common, Alpha),
     Shine = wings_dialog:get_value(shininess, Common),
+    RS0 = wings_shaders:use_prog(1, #{}),
+    Obj = glu:newQuadric(),
     gl:materialf(?GL_FRONT, ?GL_SHININESS, Shine*128.0),
     gl:materialfv(?GL_FRONT, ?GL_AMBIENT, Amb),
     gl:materialfv(?GL_FRONT, ?GL_DIFFUSE, Diff),
     gl:materialfv(?GL_FRONT, ?GL_SPECULAR, Spec),
     gl:blendFunc(?GL_SRC_ALPHA, ?GL_ONE_MINUS_SRC_ALPHA),
-    gl:enable(?GL_LIGHTING),
     gl:enable(?GL_BLEND),
     gl:enable(?GL_DEPTH_TEST),
     gl:enable(?GL_CULL_FACE),
     gl:rotatef(-90.0,1.0,0.0,0.0),
     gl:color4ub(255, 255, 255, 255),
-    RS0 = wings_shaders:use_prog(1, #{}),
-    Obj = glu:newQuadric(),
     glu:quadricDrawStyle(Obj, ?GLU_FILL),
     glu:quadricNormals(Obj, ?GLU_SMOOTH),
+    io:format("Mat: ~p~n",[Common]),
+    io:format("maps: ~p~n",[Maps]),
     %% UseNormalMap = apply_normal_map(get_normal_map(Maps)), No bi-tangent..
-    RS1 = case apply_texture(prop_get(diffuse, Maps, none), RS0) of
+    apply_normal_map(none, RS0),
+    RS1 = case apply_texture(get_texture_map(Maps), RS0) of
               true -> glu:quadricTexture(Obj, ?GLU_TRUE), RS0;
               false -> RS0
           end,

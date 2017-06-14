@@ -739,7 +739,7 @@ setup_hook(#in{wx=Canvas, type=custom_gl, hook=CustomRedraw}, Fields) ->
 		     ok
 	     end,
     wxWindow:connect(Canvas, paint, [{callback, Redraw}]),
-    wxWindow:connect(Canvas, erase_background, [{callback, fun(_,_) -> ok end}]), %% WIN32 only?
+    %%wxWindow:connect(Canvas, erase_background, [{callback, fun(_,_) -> ok end}]), %% WIN32 only?
     ok;
 
 setup_hook(_What, _) ->
