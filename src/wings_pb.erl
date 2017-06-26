@@ -29,20 +29,32 @@
 start(Msg) when is_list(Msg) ->
     case get(wings_not_running) of
 	undefined ->  wx_object:cast(?PB,{start,Msg,percent});
-	_ -> ignore
+	_ -> io:fwrite("PB: ~s ~n",[Msg])
     end.
 
 update(Percent) when is_float(Percent) ->
-    wx_object:cast(?PB, {update,"",Percent}).
+    case get(wings_not_running) of
+    undefined ->  wx_object:cast(?PB, {update,"",Percent});
+    _ -> io:fwrite("PB: ~p ~n",[Percent])
+    end.
 
 update(Percent, Msg) when is_list(Msg), is_float(Percent) ->
-    wx_object:cast(?PB,{update,Msg,Percent}).
+    case get(wings_not_running) of
+    undefined ->  wx_object:cast(?PB,{update,Msg,Percent});
+    _ -> io:fwrite("PB: ~p ~s~n",[Percent, Msg])
+    end.
 
 pause() ->
-    wx_object:call(?PB,pause).
+    case get(wings_not_running) of
+    undefined ->  wx_object:call(?PB,pause);
+    _ -> ignore
+    end.
 
 done() ->
-    wx_object:call(?PB,done).
+    case get(wings_not_running) of
+    undefined ->  wx_object:call(?PB,done);
+    _ -> ignore
+    end.
 
 done(Ret) ->
     done(),
@@ -58,7 +70,10 @@ done_stat(Ret) ->
     Ret.
 
 cancel() ->
-    wx_object:call(?PB,cancel).
+    case get(wings_not_running) of
+    undefined ->  wx_object:call(?PB,cancel);
+    _ -> ignore
+    end.
 
 %% Helpers
 
